@@ -1,0 +1,304 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Atmospheric Weather</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+
+  <body>
+    <div class="app-wrapper">
+      <main class="weather-app-container theme-sunset" id="app-container">
+        
+        <!-- Top Navigation: City Search & Unit Toggle -->
+        <header class="top-nav">
+          <form class="search-form" onsubmit="getWeather(event)" id="search-form">
+            <div class="search-input-wrapper">
+              <input
+                id="city-input"
+                class="search-input"
+                type="text"
+                placeholder="Search city (e.g. Karachi, London)"
+                autocomplete="off"
+                required
+              />
+              <button type="submit" class="search-btn" aria-label="Search city">
+                <svg viewBox="0 0 24 24" fill="none">
+                  <circle cx="11" cy="11" r="7"></circle>
+                  <line x1="16.5" y1="16.5" x2="21" y2="21"></line>
+                </svg>
+              </button>
+            </div>
+          </form>
+
+          <div class="unit-toggle" role="group" aria-label="Temperature unit selection">
+            <button
+              type="button"
+              class="unit-btn active"
+              id="unit-c-btn"
+              onclick="setTemperatureUnit('C')"
+            >
+              °C
+            </button>
+            <button
+              type="button"
+              class="unit-btn"
+              id="unit-f-btn"
+              onclick="setTemperatureUnit('F')"
+            >
+              °F
+            </button>
+          </div>
+        </header>
+
+        <!-- Hero Atmospheric Section (Dynamic Horizon Glow & Gradient) -->
+        <section class="hero-gradient-viewport" id="hero-gradient">
+          
+          <!-- Reference 3-dot color palette swatch -->
+          <div class="hero-palette-swatch" aria-hidden="true">
+            <span class="palette-dot palette-dot-1" id="swatch-dot-1"></span>
+            <span class="palette-dot palette-dot-2" id="swatch-dot-2"></span>
+            <span class="palette-dot palette-dot-3" id="swatch-dot-3"></span>
+          </div>
+
+          <div class="hero-content">
+            <span class="hero-location-label">LOCATION</span>
+            <h1 class="hero-location-title" id="show-city">Karachi, Pakistan</h1>
+            
+            <div class="hero-datetime">
+              <span id="show-day-date">Saturday, Sep 19</span>
+              <span class="hero-datetime-separator">•</span>
+              <span id="show-local-time">9:30 PM</span>
+            </div>
+
+            <div class="hero-temp-block">
+              <span class="hero-temp-val" id="show-weather">30</span>
+              <span class="hero-temp-deg" id="temp-unit-symbol">°</span>
+            </div>
+
+            <div class="hero-condition-row">
+              <div class="hero-weather-icon-wrap" id="hero-weather-icon">
+                <!-- Dynamic Minimal Weather SVG inserted via JS -->
+                <svg viewBox="0 0 24 24">
+                  <circle cx="12" cy="12" r="5"></circle>
+                  <line x1="12" y1="1" x2="12" y2="3"></line>
+                  <line x1="12" y1="21" x2="12" y2="23"></line>
+                  <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                  <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                  <line x1="1" y1="12" x2="3" y2="12"></line>
+                  <line x1="21" y1="12" x2="23" y2="12"></line>
+                  <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                  <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                </svg>
+              </div>
+              <span class="hero-condition-text" id="show-condition">Clear</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Lower Editorial Information Panel -->
+        <section class="editorial-panel">
+          
+          <!-- Error Notification Container -->
+          <p class="error-msg" id="error" role="alert"></p>
+
+          <!-- Astronomical Hero Card (Inspired directly by reference image) -->
+          <div class="astronomy-feature-header">
+            <div class="astro-title-group">
+              <div class="astro-headline-row">
+                <span class="astro-tag" id="astro-primary-tag">TODAY'S SUNSET</span>
+                <span class="astro-mini-dots" aria-hidden="true">
+                  <span class="mini-dot palette-dot-1"></span>
+                  <span class="mini-dot palette-dot-2"></span>
+                  <span class="mini-dot palette-dot-3"></span>
+                </span>
+              </div>
+              <span class="astro-subtitle" id="astro-palette-desc">
+                SHADES OF SCARLET, ORANGE, &amp; LAVENDER
+              </span>
+
+              <div class="astro-main-row">
+                <div class="astro-time-display">
+                  <span class="astro-time-val" id="astro-main-time">6:31</span>
+                  <span class="astro-time-ampm" id="astro-main-ampm">pm</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Reference Fine-Line Setting Sun Ray Icon -->
+            <div class="setting-sun-ray-icon" aria-hidden="true">
+              <svg viewBox="0 0 60 40" fill="none" stroke="currentColor">
+                <!-- Horizon line -->
+                <line x1="2" y1="36" x2="58" y2="36" stroke-width="1.8" stroke-linecap="round"></line>
+                <!-- Semicircle sun dipping below horizon -->
+                <path d="M22 36 A8 8 0 0 1 38 36" stroke-width="1.8" fill="none"></path>
+                <!-- Radial light rays -->
+                <line x1="30" y1="20" x2="30" y2="14" stroke-width="1.6" stroke-linecap="round"></line>
+                <line x1="23" y1="22" x2="19" y2="18" stroke-width="1.6" stroke-linecap="round"></line>
+                <line x1="37" y1="22" x2="41" y2="18" stroke-width="1.6" stroke-linecap="round"></line>
+                <line x1="18" y1="27" x2="13" y2="25" stroke-width="1.6" stroke-linecap="round"></line>
+                <line x1="42" y1="27" x2="47" y2="25" stroke-width="1.6" stroke-linecap="round"></line>
+                <line x1="16" y1="33" x2="10" y2="33" stroke-width="1.6" stroke-linecap="round"></line>
+                <line x1="44" y1="33" x2="50" y2="33" stroke-width="1.6" stroke-linecap="round"></line>
+              </svg>
+            </div>
+          </div>
+
+          <!-- Important Weather Statistics Grid with Reference Vertical Indicator Bars -->
+          <div class="metrics-section">
+            
+            <!-- Feels Like -->
+            <div class="metric-item">
+              <div class="metric-text-group">
+                <span class="metric-label">FEELS LIKE</span>
+                <span class="metric-val" id="show-feels">32°</span>
+              </div>
+              <div class="metric-indicator-capsule" title="Thermal Index">
+                <div class="metric-indicator-fill" id="indicator-feels-fill" style="height: 65%;"></div>
+                <div class="metric-indicator-tick" id="indicator-feels-tick" style="bottom: 65%;"></div>
+              </div>
+            </div>
+
+            <!-- Humidity -->
+            <div class="metric-item">
+              <div class="metric-text-group">
+                <span class="metric-label">HUMIDITY</span>
+                <span class="metric-val" id="show-humidity">68%</span>
+              </div>
+              <div class="metric-indicator-capsule" title="Moisture">
+                <div class="metric-indicator-fill" id="indicator-humidity-fill" style="height: 68%;"></div>
+                <div class="metric-indicator-tick" id="indicator-humidity-tick" style="bottom: 68%;"></div>
+              </div>
+            </div>
+
+            <!-- Rain Chance -->
+            <div class="metric-item">
+              <div class="metric-text-group">
+                <span class="metric-label">RAIN CHANCE</span>
+                <span class="metric-val" id="show-rain">20%</span>
+              </div>
+              <div class="metric-indicator-capsule" title="Precipitation Probability">
+                <div class="metric-indicator-fill" id="indicator-rain-fill" style="height: 20%;"></div>
+                <div class="metric-indicator-tick" id="indicator-rain-tick" style="bottom: 20%;"></div>
+              </div>
+            </div>
+
+            <!-- Wind -->
+            <div class="metric-item">
+              <div class="metric-text-group">
+                <span class="metric-label">WIND SPEED</span>
+                <span class="metric-val" id="show-wind">14 km/h</span>
+              </div>
+              <div class="metric-indicator-capsule" title="Wind Velocity">
+                <div class="metric-indicator-fill" id="indicator-wind-fill" style="height: 35%;"></div>
+                <div class="metric-indicator-tick" id="indicator-wind-tick" style="bottom: 35%;"></div>
+              </div>
+            </div>
+
+            <!-- UV Index -->
+            <div class="metric-item">
+              <div class="metric-text-group">
+                <span class="metric-label">UV INDEX</span>
+                <span class="metric-val" id="show-uv">6</span>
+              </div>
+              <div class="metric-indicator-capsule" title="Ultraviolet Radiation">
+                <div class="metric-indicator-fill" id="indicator-uv-fill" style="height: 60%;"></div>
+                <div class="metric-indicator-tick" id="indicator-uv-tick" style="bottom: 60%;"></div>
+              </div>
+            </div>
+
+            <!-- Cloud Cover -->
+            <div class="metric-item">
+              <div class="metric-text-group">
+                <span class="metric-label">CLOUD COVER</span>
+                <span class="metric-val" id="show-cloud">25%</span>
+              </div>
+              <div class="metric-indicator-capsule" title="Cloud Density">
+                <div class="metric-indicator-fill" id="indicator-cloud-fill" style="height: 25%;"></div>
+                <div class="metric-indicator-tick" id="indicator-cloud-tick" style="bottom: 25%;"></div>
+              </div>
+            </div>
+
+            <!-- Atmospheric Pressure -->
+            <div class="metric-item">
+              <div class="metric-text-group">
+                <span class="metric-label">PRESSURE</span>
+                <span class="metric-val" id="show-pressure">1012 hPa</span>
+              </div>
+              <div class="metric-indicator-capsule" title="Barometric Pressure">
+                <div class="metric-indicator-fill" id="indicator-pressure-fill" style="height: 52%;"></div>
+                <div class="metric-indicator-tick" id="indicator-pressure-tick" style="bottom: 52%;"></div>
+              </div>
+            </div>
+
+            <!-- Snow Chance -->
+            <div class="metric-item">
+              <div class="metric-text-group">
+                <span class="metric-label">SNOW CHANCE</span>
+                <span class="metric-val" id="show-snow">0%</span>
+              </div>
+              <div class="metric-indicator-capsule" title="Snow Probability">
+                <div class="metric-indicator-fill" id="indicator-snow-fill" style="height: 0%;"></div>
+                <div class="metric-indicator-tick" id="indicator-snow-tick" style="bottom: 0%;"></div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Full Visibility Pill (Reference Element) -->
+          <div class="visibility-pill-container">
+            <span class="vis-pill-label">% FULL VISIBILITY</span>
+            <div class="vis-pill-track">
+              <div class="vis-pill-fill" id="vis-fill-bar" style="width: 100%;"></div>
+              <div class="vis-pill-content">
+                <span class="vis-pill-percentage" id="show-visibility-val">10</span>
+                <span class="vis-pill-symbol" id="show-visibility-unit">km (100%)</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Hourly Forecast Row (6-8 upcoming hours) -->
+          <section class="hourly-section">
+            <div class="section-label-header">
+              <span>HOURLY FORECAST</span>
+              <span id="hourly-count-tag">UPCOMING HOURS</span>
+            </div>
+            <div class="hourly-scroll-container" id="hourly-forecast-container">
+              <!-- Dynamically rendered via script.js -->
+            </div>
+          </section>
+
+          <!-- Astronomy & Celestial Data Grid -->
+          <section class="secondary-astro-grid">
+            <div class="sub-astro-card">
+              <span class="sub-astro-label">SUNRISE</span>
+              <span class="sub-astro-val" id="astro-sunrise">--</span>
+            </div>
+            <div class="sub-astro-card">
+              <span class="sub-astro-label">SUNSET</span>
+              <span class="sub-astro-val" id="astro-sunset">--</span>
+            </div>
+            <div class="sub-astro-card">
+              <span class="sub-astro-label">MOON PHASE</span>
+              <span class="sub-astro-val" id="astro-moon-phase">--</span>
+            </div>
+            <div class="sub-astro-card">
+              <span class="sub-astro-label">MOON ILLUMINATION</span>
+              <span class="sub-astro-val" id="astro-moon-illum">--</span>
+            </div>
+          </section>
+
+          <footer class="app-footer-note">
+            ATMOSPHERIC EDITORIAL WEATHER • POWERED BY WEATHERAPI
+          </footer>
+        </section>
+
+      </main>
+    </div>
+
+    <!-- Axios library preserved from user's original setup -->
+    <script src="https://cdn.jsdelivr.net/npm/axios@1.17.0/dist/axios.min.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>

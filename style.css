@@ -1,0 +1,1004 @@
+/* ==========================================================================
+   Atmospheric Editorial Weather Web App - Style System
+   Inspired by Minimalist Editorial & Fine-Art Gradient Design
+   ========================================================================== */
+
+/* --- Fonts Import --- */
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,400&family=DM+Sans:ital,opsz,wght@0,9..40,200..800;1,9..40,200..800&family=Inter:wght@200;300;400;500;600;700&display=swap');
+
+:root {
+  /* Editorial Color Palette */
+  --bg-app: #eef0f3;
+  --panel-bg: #fcfcfd;
+  --panel-subtle: #f4f4f7;
+  --panel-border: rgba(0, 0, 0, 0.05);
+  
+  --text-primary: #141416;
+  --text-secondary: #57575e;
+  --text-muted: #8e8e97;
+  --text-faint: #b4b4bc;
+  --text-inverted: #ffffff;
+  
+  --font-main: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'DM Mono', SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  
+  --radius-app: 28px;
+  --radius-card: 22px;
+  --radius-pill: 999px;
+  
+  --shadow-subtle: 0 4px 20px rgba(0, 0, 0, 0.04);
+  --shadow-card: 0 10px 30px rgba(0, 0, 0, 0.06);
+  --shadow-ambient: 0 30px 60px -15px rgba(20, 20, 30, 0.12);
+  
+  --transition-smooth: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-theme: background 0.8s ease, color 0.4s ease;
+}
+
+/* Base Reset */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  min-height: 100%;
+  font-family: var(--font-main);
+  background: var(--bg-app);
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  line-height: 1.4;
+  overflow-x: hidden;
+}
+
+/* Outer Wrapper: Centers app on large screens with ambient editorial padding */
+.app-wrapper {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 24px 16px;
+  position: relative;
+}
+
+/* Main Container: Editorial Frame */
+.weather-app-container {
+  width: 100%;
+  max-width: 1160px;
+  background: #ffffff;
+  border-radius: var(--radius-app);
+  box-shadow: var(--shadow-ambient);
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid rgba(0, 0, 0, 0.04);
+  transition: var(--transition-theme);
+}
+
+/* ==========================================================================
+   TOP BAR: Search & Temperature Unit Controls
+   ========================================================================== */
+.top-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 28px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 20;
+  gap: 16px;
+}
+
+/* Search Form */
+.search-form {
+  display: flex;
+  align-items: center;
+  position: relative;
+  flex: 1;
+  max-width: 380px;
+}
+
+.search-input-wrapper {
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.search-input {
+  width: 100%;
+  height: 42px;
+  padding: 0 42px 0 16px;
+  font-family: var(--font-main);
+  font-size: 0.88rem;
+  font-weight: 400;
+  color: #141416;
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-radius: var(--radius-pill);
+  outline: none;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+  transition: var(--transition-smooth);
+}
+
+.search-input::placeholder {
+  color: #7b7b85;
+  font-size: 0.84rem;
+}
+
+.search-input:focus {
+  background: rgba(255, 255, 255, 0.95);
+  border-color: rgba(20, 20, 25, 0.2);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+.search-btn {
+  position: absolute;
+  right: 6px;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: none;
+  background: #141416;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: var(--transition-smooth);
+}
+
+.search-btn:hover {
+  background: #333338;
+  transform: scale(1.04);
+}
+
+.search-btn svg {
+  width: 14px;
+  height: 14px;
+  stroke: currentColor;
+  stroke-width: 2.2;
+}
+
+/* Unit Toggle Switch */
+.unit-toggle {
+  display: flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-radius: var(--radius-pill);
+  padding: 3px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+}
+
+.unit-btn {
+  background: transparent;
+  border: none;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 500;
+  padding: 6px 12px;
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  color: var(--text-secondary);
+  transition: var(--transition-smooth);
+}
+
+.unit-btn.active {
+  background: #141416;
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+}
+
+/* ==========================================================================
+   ATMOSPHERIC HERO SECTION (Top Half)
+   Dynamic Gradients & Horizon Glow
+   ========================================================================== */
+.hero-gradient-viewport {
+  position: relative;
+  width: 100%;
+  min-height: 390px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 85px 32px 32px 32px;
+  overflow: hidden;
+  transition: background 1s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Subtle Film Grain Overlay */
+.hero-gradient-viewport::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.045'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Dynamic Radial Horizon Glow */
+.hero-gradient-viewport::after {
+  content: '';
+  position: absolute;
+  bottom: -40%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 110%;
+  height: 100%;
+  border-radius: 50%;
+  background: var(--theme-glow, radial-gradient(circle, rgba(246, 112, 53, 0.45) 0%, rgba(249, 152, 99, 0) 70%));
+  filter: blur(40px);
+  pointer-events: none;
+  z-index: 2;
+  transition: background 1s ease;
+}
+
+/* Palette Swatch Dots (top-left reference characteristic) */
+.hero-palette-swatch {
+  position: absolute;
+  top: 80px;
+  left: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 5;
+}
+
+.palette-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+  transition: background-color 0.8s ease;
+}
+
+.palette-dot-1 { background-color: var(--palette-1, #ea5d38); }
+.palette-dot-2 { background-color: var(--palette-2, #f69e55); }
+.palette-dot-3 { background-color: var(--palette-3, #a795cf); }
+
+/* Hero Weather Composition */
+.hero-content {
+  position: relative;
+  z-index: 5;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.hero-location-label {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--theme-text-faint, rgba(20, 20, 25, 0.5));
+  margin-bottom: 4px;
+}
+
+.hero-location-title {
+  font-family: var(--font-main);
+  font-size: 1.6rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: var(--theme-text-primary, #141416);
+  margin-bottom: 6px;
+}
+
+.hero-datetime {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  color: var(--theme-text-muted, rgba(20, 20, 25, 0.65));
+  letter-spacing: 0.04em;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 18px;
+}
+
+.hero-datetime-separator {
+  opacity: 0.4;
+}
+
+/* Large Temperature & Icon Group */
+.hero-temp-block {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  margin-top: 4px;
+  position: relative;
+}
+
+.hero-temp-val {
+  font-family: var(--font-main);
+  font-size: clamp(4.5rem, 11vw, 6.8rem);
+  font-weight: 200;
+  line-height: 0.95;
+  letter-spacing: -0.04em;
+  color: var(--theme-text-primary, #141416);
+}
+
+.hero-temp-deg {
+  font-family: var(--font-main);
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 200;
+  color: var(--theme-text-primary, #141416);
+  vertical-align: top;
+  margin-left: 2px;
+}
+
+.hero-condition-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.hero-weather-icon-wrap {
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.9;
+}
+
+.hero-weather-icon-wrap svg {
+  width: 100%;
+  height: 100%;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  fill: none;
+}
+
+.hero-condition-text {
+  font-family: var(--font-main);
+  font-size: 1.15rem;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  color: var(--theme-text-primary, #141416);
+}
+
+/* ==========================================================================
+   THEME DEFINITIONS: 5 Abstract Atmospheric Gradients
+   1. Sunset  2. Sunrise  3. Sunny  4. Rainy  5. Night
+   ========================================================================== */
+
+/* 1. SUNSET (Inspired directly by reference image) */
+.weather-app-container.theme-sunset .hero-gradient-viewport {
+  background: linear-gradient(180deg, #9cb0c8 0%, #d8b8cb 35%, #f69865 72%, #f8673a 100%);
+  --theme-glow: radial-gradient(circle, rgba(248, 103, 58, 0.65) 0%, rgba(246, 152, 101, 0) 70%);
+  --palette-1: #ea5d38;
+  --palette-2: #f69e55;
+  --palette-3: #a795cf;
+  --theme-text-primary: #141416;
+  --theme-text-muted: rgba(20, 20, 25, 0.65);
+  --theme-text-faint: rgba(20, 20, 25, 0.5);
+}
+
+/* 2. SUNRISE */
+.weather-app-container.theme-sunrise .hero-gradient-viewport {
+  background: linear-gradient(180deg, #99bede 0%, #c6daf0 30%, #fbd5a0 68%, #ff8e5e 100%);
+  --theme-glow: radial-gradient(circle, rgba(255, 142, 94, 0.55) 0%, rgba(251, 213, 160, 0) 70%);
+  --palette-1: #ff7e47;
+  --palette-2: #ffd175;
+  --palette-3: #92bfe6;
+  --theme-text-primary: #141416;
+  --theme-text-muted: rgba(20, 20, 25, 0.65);
+  --theme-text-faint: rgba(20, 20, 25, 0.5);
+}
+
+/* 3. SUNNY */
+.weather-app-container.theme-sunny .hero-gradient-viewport {
+  background: linear-gradient(180deg, #78aedd 0%, #b2d7f8 35%, #fbe8b5 75%, #fed276 100%);
+  --theme-glow: radial-gradient(circle, rgba(254, 210, 118, 0.5) 0%, rgba(178, 215, 248, 0) 70%);
+  --palette-1: #f4a261;
+  --palette-2: #ffe382;
+  --palette-3: #6eaee8;
+  --theme-text-primary: #141416;
+  --theme-text-muted: rgba(20, 20, 25, 0.65);
+  --theme-text-faint: rgba(20, 20, 25, 0.5);
+}
+
+/* 4. RAINY */
+.weather-app-container.theme-rainy .hero-gradient-viewport {
+  background: linear-gradient(180deg, #4f5f6e 0%, #768694 38%, #9eaeb9 75%, #6a7c8c 100%);
+  --theme-glow: radial-gradient(circle, rgba(158, 174, 185, 0.4) 0%, rgba(79, 95, 110, 0) 70%);
+  --palette-1: #566573;
+  --palette-2: #8395a7;
+  --palette-3: #405060;
+  --theme-text-primary: #ffffff;
+  --theme-text-muted: rgba(255, 255, 255, 0.8);
+  --theme-text-faint: rgba(255, 255, 255, 0.6);
+}
+
+/* 5. NIGHT */
+.weather-app-container.theme-night .hero-gradient-viewport {
+  background: linear-gradient(180deg, #0b0c16 0%, #151829 35%, #252445 70%, #3e3256 100%);
+  --theme-glow: radial-gradient(circle, rgba(62, 50, 86, 0.55) 0%, rgba(21, 24, 41, 0) 70%);
+  --palette-1: #6d62b5;
+  --palette-2: #433d73;
+  --palette-3: #201e38;
+  --theme-text-primary: #ffffff;
+  --theme-text-muted: rgba(255, 255, 255, 0.78);
+  --theme-text-faint: rgba(255, 255, 255, 0.55);
+}
+
+/* Dark theme top controls visibility adjustment */
+.weather-app-container.theme-night .search-input,
+.weather-app-container.theme-rainy .search-input {
+  background: rgba(255, 255, 255, 0.88);
+}
+
+/* ==========================================================================
+   OFF-WHITE EDITORIAL INFORMATION PANEL (Lower Half)
+   ========================================================================== */
+.editorial-panel {
+  background: var(--panel-bg);
+  border-top-left-radius: var(--radius-card);
+  border-top-right-radius: var(--radius-card);
+  margin-top: -24px;
+  position: relative;
+  z-index: 10;
+  padding: 34px 40px 40px 40px;
+  box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.04);
+}
+
+/* Error Notification */
+.error-msg {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: #c93b2b;
+  letter-spacing: 0.05em;
+  margin-bottom: 18px;
+  display: none;
+  padding: 10px 14px;
+  background: #fdf1f0;
+  border-radius: 8px;
+  border: 1px solid rgba(201, 59, 43, 0.15);
+}
+
+.error-msg:not(:empty) {
+  display: block;
+}
+
+/* --- Section 1: Astronomical Hero Block (Direct Reference Feature) --- */
+.astronomy-feature-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--panel-border);
+  padding-bottom: 24px;
+  margin-bottom: 30px;
+}
+
+.astro-title-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.astro-headline-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.astro-tag {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+.astro-mini-dots {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.mini-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+}
+
+.astro-subtitle {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  font-weight: 400;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.astro-date-badge {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  color: var(--text-secondary);
+}
+
+/* Big Sunset Time & Ray Burst Sun Icon */
+.astro-main-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 14px;
+}
+
+.astro-time-display {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.astro-time-val {
+  font-family: var(--font-main);
+  font-size: clamp(2.6rem, 5vw, 3.4rem);
+  font-weight: 400;
+  line-height: 1;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+}
+
+.astro-time-ampm {
+  font-family: var(--font-main);
+  font-size: 1.25rem;
+  font-weight: 300;
+  color: var(--text-muted);
+}
+
+/* Fine-line Sun Ray Burst Icon */
+.setting-sun-ray-icon {
+  width: 54px;
+  height: 38px;
+  color: var(--text-primary);
+  opacity: 0.85;
+}
+
+.setting-sun-ray-icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* ==========================================================================
+   METRICS GRID: Editorial 2-Column & Indicator Bars
+   ========================================================================== */
+.metrics-section {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  row-gap: 28px;
+  column-gap: 40px;
+  margin-bottom: 34px;
+}
+
+.metric-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 52px;
+}
+
+.metric-text-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.metric-label {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+}
+
+.metric-val {
+  font-family: var(--font-main);
+  font-size: 1.55rem;
+  font-weight: 400;
+  color: var(--text-primary);
+  letter-spacing: -0.01em;
+}
+
+.metric-sub {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  margin-left: 2px;
+}
+
+/* Vertical Capsule Indicator Bar (Reference Feature) */
+.metric-indicator-capsule {
+  width: 5px;
+  height: 38px;
+  background: #e4e4ea;
+  border-radius: var(--radius-pill);
+  position: relative;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.metric-indicator-fill {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(180deg, #ea5d38 0%, #6892d5 100%);
+  border-radius: var(--radius-pill);
+  transition: height 0.6s ease;
+}
+
+.metric-indicator-tick {
+  position: absolute;
+  left: -2px;
+  right: -2px;
+  height: 2px;
+  background: #141416;
+  border-radius: 1px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.15);
+  transition: bottom 0.6s ease;
+}
+
+/* --- Full Visibility Horizontal Pill (Reference Element) --- */
+.visibility-pill-container {
+  margin-bottom: 36px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.vis-pill-label {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.vis-pill-track {
+  width: 100%;
+  height: 48px;
+  background: #f1f2f6;
+  border-radius: 14px;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  border: 1px solid rgba(0, 0, 0, 0.04);
+}
+
+.vis-pill-fill {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 68%;
+  background: linear-gradient(90deg, #f7d286 0%, #b8d4f6 60%, #85aff0 100%);
+  border-radius: 14px;
+  opacity: 0.85;
+  transition: width 0.7s ease;
+}
+
+.vis-pill-content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: baseline;
+  gap: 2px;
+}
+
+.vis-pill-percentage {
+  font-family: var(--font-main);
+  font-size: 1.4rem;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.vis-pill-symbol {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+/* ==========================================================================
+   HOURLY FORECAST: Minimalist Editorial Strip
+   ========================================================================== */
+.hourly-section {
+  border-top: 1px solid var(--panel-border);
+  padding-top: 26px;
+  margin-bottom: 30px;
+}
+
+.section-label-header {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.hourly-scroll-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(85px, 1fr));
+  gap: 12px;
+  width: 100%;
+}
+
+.hourly-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 14px 8px;
+  background: var(--panel-subtle);
+  border-radius: 14px;
+  transition: var(--transition-smooth);
+  border: 1px solid transparent;
+}
+
+.hourly-item:hover {
+  background: #ffffff;
+  border-color: rgba(0, 0, 0, 0.06);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+  transform: translateY(-2px);
+}
+
+.hourly-time {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 400;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+}
+
+.hourly-icon-wrap {
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 8px;
+}
+
+.hourly-icon-wrap svg {
+  width: 100%;
+  height: 100%;
+  stroke: var(--text-primary);
+  stroke-width: 1.8;
+  fill: none;
+}
+
+.hourly-temp {
+  font-family: var(--font-main);
+  font-size: 1.05rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+
+.hourly-rain {
+  font-family: var(--font-mono);
+  font-size: 0.64rem;
+  color: #5381c6;
+  font-weight: 500;
+}
+
+/* ==========================================================================
+   ASTRONOMY EXPANDED: Sunrise, Sunset, Moon Phase
+   ========================================================================== */
+.secondary-astro-grid {
+  border-top: 1px solid var(--panel-border);
+  padding-top: 24px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.sub-astro-card {
+  display: flex;
+  flex-direction: column;
+}
+
+.sub-astro-label {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+}
+
+.sub-astro-val {
+  font-family: var(--font-main);
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+/* Subtle Footer Note */
+.app-footer-note {
+  margin-top: 18px;
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  opacity: 0.7;
+}
+
+/* ==========================================================================
+   RESPONSIVE DESIGN SYSTEM
+   ========================================================================== */
+
+/* --- Desktop Layout (1200px+) --- */
+@media (min-width: 1200px) {
+  .weather-app-container {
+    max-width: 1180px;
+  }
+  
+  .hero-gradient-viewport {
+    min-height: 420px;
+    padding: 100px 48px 48px 48px;
+  }
+
+  .editorial-panel {
+    padding: 44px 56px 48px 56px;
+    margin-top: -30px;
+  }
+
+  .metrics-section {
+    grid-template-columns: repeat(4, 1fr);
+    column-gap: 32px;
+  }
+}
+
+/* --- Tablet Layout (768px - 1199px) --- */
+@media (min-width: 768px) and (max-width: 1199px) {
+  .app-wrapper {
+    padding: 20px 16px;
+  }
+
+  .metrics-section {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
+
+  .secondary-astro-grid {
+    grid-template-columns: repeat(2, 1fr);
+    row-gap: 16px;
+  }
+}
+
+/* --- Mobile Layout (under 768px) ---
+   Closely matches the phone mockup reference image
+   ----------------------------------- */
+@media (max-width: 767px) {
+  .app-wrapper {
+    padding: 0;
+  }
+
+  .weather-app-container {
+    border-radius: 0;
+    min-height: 100vh;
+    border: none;
+    box-shadow: none;
+  }
+
+  .top-nav {
+    padding: 16px 20px;
+    gap: 10px;
+  }
+
+  .search-form {
+    max-width: none;
+  }
+
+  .hero-gradient-viewport {
+    min-height: 380px;
+    padding: 80px 24px 34px 24px;
+  }
+
+  .hero-palette-swatch {
+    top: 76px;
+    left: 22px;
+  }
+
+  .editorial-panel {
+    border-top-left-radius: 26px;
+    border-top-right-radius: 26px;
+    padding: 28px 22px 36px 22px;
+    margin-top: -24px;
+  }
+
+  .metrics-section {
+    grid-template-columns: repeat(2, 1fr);
+    column-gap: 20px;
+    row-gap: 24px;
+  }
+
+  .astronomy-feature-header {
+    margin-bottom: 24px;
+    padding-bottom: 18px;
+  }
+
+  /* Horizontal scrolling for hourly strip on mobile */
+  .hourly-scroll-container {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    gap: 10px;
+    padding-bottom: 8px;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .hourly-scroll-container::-webkit-scrollbar {
+    height: 4px;
+  }
+
+  .hourly-scroll-container::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+  }
+
+  .hourly-item {
+    flex: 0 0 76px;
+    scroll-snap-align: start;
+    padding: 12px 6px;
+  }
+
+  .secondary-astro-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+}
+
+/* --- Small Mobile Layout (under 480px) --- */
+@media (max-width: 479px) {
+  .hero-temp-val {
+    font-size: 4.2rem;
+  }
+
+  .hero-location-title {
+    font-size: 1.35rem;
+  }
+
+  .metrics-section {
+    grid-template-columns: 1fr 1fr;
+    column-gap: 14px;
+  }
+
+  .metric-val {
+    font-size: 1.35rem;
+  }
+
+  .astro-time-val {
+    font-size: 2.3rem;
+  }
+
+  .setting-sun-ray-icon {
+    width: 44px;
+    height: 32px;
+  }
+}
