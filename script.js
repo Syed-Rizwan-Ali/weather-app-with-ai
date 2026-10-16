@@ -1,12 +1,12 @@
 // =============================================================================
 // Atmospheric Editorial Weather App - JavaScript Implementation
-// Beginner-friendly, modular structure utilizing WeatherAPI.com & Axios
+// Featuring Geolocation, Skeleton Loaders, Time-of-Day Gradients & Auto Dark Mode
 // =============================================================================
 
-// WeatherAPI.com Key (Preserved exactly from original project)
+// WeatherAPI.com Key (Preserved from project)
 const apiKey = "681c4c0fdf884b0287175040261609";
 
-// Primary DOM Elements (Preserved existing IDs)
+// Primary DOM Elements
 const para = document.querySelector("#show-weather");
 const humidity = document.querySelector("#show-humidity");
 const cityName = document.querySelector("#show-city");
@@ -80,39 +80,74 @@ function getWeatherSvg(conditionText, isDay = 1) {
 }
 
 // -----------------------------------------------------------------------------
-// 2. Dynamic Atmospheric Theme Engine
-// Evaluates condition, local time, sunrise, and sunset
+// 2. Loading State Engine (Sleek Skeletons for all data variables)
+// -----------------------------------------------------------------------------
+function showLoadingState() {
+  if (appContainer) {
+    appContainer.classList.add("is-loading");
+  }
+  renderHourlySkeletons();
+}
+
+function hideLoadingState() {
+  if (appContainer) {
+    appContainer.classList.remove("is-loading");
+  }
+}
+
+function renderHourlySkeletons() {
+  if (!hourlyContainer) return;
+  let html = "";
+  for (let i = 0; i < 7; i++) {
+    html += `
+      <div class="hourly-item skeleton-hourly-item" aria-hidden="true">
+        <span class="hourly-time skeleton-block skeleton-time"></span>
+        <div class="hourly-icon-wrap skeleton-block skeleton-icon"></div>
+        <span class="hourly-temp skeleton-block skeleton-temp"></span>
+        <span class="hourly-rain skeleton-block skeleton-rain"></span>
+      </div>
+    `;
+  }
+  hourlyContainer.innerHTML = html;
+}
+
+// -----------------------------------------------------------------------------
+// 3. Dynamic Atmospheric Theme Engine & Auto Dark Mode
+// Evaluates condition, local time, sunrise, and sunset across all day phases
 // -----------------------------------------------------------------------------
 function parseTimeToMinutes(timeStr) {
-  // Parses "06:19 AM" or "06:31 PM" or "22:00" into minutes from midnight
   if (!timeStr) return 0;
-  
   const trimmed = timeStr.trim();
+
+  // Format: "06:19 AM" or "06:31 PM"
   if (trimmed.includes("AM") || trimmed.includes("PM")) {
     const parts = trimmed.split(" ");
-    const [hours, minutes] = parts[0].split(":").map(Number);
-    let total = (hours % 12) * 60 + minutes;
-    if (parts[1].toUpperCase() === "PM") {
-      total += 12 * 60;
+    const timeParts = parts[0].split(":");
+    let hours = parseInt(timeParts[0], 10) || 0;
+    const minutes = parseInt(timeParts[1], 10) || 0;
+    if (parts[1].toUpperCase() === "PM" && hours < 12) {
+      hours += 12;
+    } else if (parts[1].toUpperCase() === "AM" && hours === 12) {
+      hours = 0;
     }
-    return total;
+    return hours * 60 + minutes;
   }
-  
-  // "YYYY-MM-DD HH:MM" or "HH:MM"
+
+  // Format: "YYYY-MM-DD HH:MM" or "HH:MM"
   const timeOnly = trimmed.includes(" ") ? trimmed.split(" ")[1] : trimmed;
   const [hours, minutes] = timeOnly.split(":").map(Number);
-  return hours * 60 + minutes;
+  return (hours || 0) * 60 + (minutes || 0);
 }
 
 function determineAtmosphericTheme(weather) {
-  const conditionText = (weather.current.condition.text || "").toLowerCase();
-  const isDay = weather.current.is_day;
-  const localTimeStr = weather.location.localtime; // e.g. "2026-09-19 22:00"
+  const conditionText = (weather.current?.condition?.text || "").toLowerCase();
+  const isDay = weather.current?.is_day;
+  const localTimeStr = weather.location?.localtime; // e.g. "2026-09-19 22:00"
   const currentMinutes = parseTimeToMinutes(localTimeStr);
-  
+
   const astro = weather.forecast?.forecastday?.[0]?.astro;
-  const sunriseMinutes = astro ? parseTimeToMinutes(astro.sunrise) : 6 * 60; // default 6:00 AM
-  const sunsetMinutes = astro ? parseTimeToMinutes(astro.sunset) : 18 * 60 + 30; // default 6:30 PM
+  const sunriseMinutes = astro?.sunrise ? parseTimeToMinutes(astro.sunrise) : 6 * 60; // default 6:00 AM
+  const sunsetMinutes = astro?.sunset ? parseTimeToMinutes(astro.sunset) : 18 * 60 + 30; // default 6:30 PM
 
   // Priority 1: Rainy / Stormy weather condition
   if (
@@ -125,6 +160,7 @@ function determineAtmosphericTheme(weather) {
   ) {
     return {
       themeClass: "theme-rainy",
+      isDark: isDay === 0,
       tag: "RAIN ATMOSPHERE",
       paletteDesc: "MUTED SLATE, DRIZZLE, & OVERCAST"
     };
@@ -134,6 +170,7 @@ function determineAtmosphericTheme(weather) {
   if (currentMinutes >= sunriseMinutes - 45 && currentMinutes <= sunriseMinutes + 60) {
     return {
       themeClass: "theme-sunrise",
+      isDark: false,
       tag: "TODAY'S SUNRISE",
       paletteDesc: "FIRST LIGHT, AMBER, & PALE AZURE"
     };
@@ -143,6 +180,7 @@ function determineAtmosphericTheme(weather) {
   if (currentMinutes >= sunsetMinutes - 60 && currentMinutes <= sunsetMinutes + 45) {
     return {
       themeClass: "theme-sunset",
+      isDark: false,
       tag: "TODAY'S SUNSET",
       paletteDesc: "SHADES OF SCARLET, ORANGE, & LAVENDER"
     };
@@ -152,6 +190,7 @@ function determineAtmosphericTheme(weather) {
   if (isDay === 1) {
     return {
       themeClass: "theme-sunny",
+      isDark: false,
       tag: "TODAY'S SUNSET",
       paletteDesc: "WARM RADIANCE, GOLD, & OPEN SKY"
     };
@@ -160,13 +199,14 @@ function determineAtmosphericTheme(weather) {
   // Priority 5: Nighttime
   return {
     themeClass: "theme-night",
+    isDark: true,
     tag: "TODAY'S SUNSET",
     paletteDesc: "MIDNIGHT NAVY, TWILIGHT, & CELESTIAL INDIGO"
   };
 }
 
 // -----------------------------------------------------------------------------
-// 3. UI Update Helpers: Sliders & Vertical Indicators
+// 4. UI Update Helpers: Sliders & Vertical Indicators
 // -----------------------------------------------------------------------------
 function setIndicator(fillId, tickId, percent) {
   const clamped = Math.min(100, Math.max(0, Math.round(percent)));
@@ -177,52 +217,60 @@ function setIndicator(fillId, tickId, percent) {
 }
 
 // -----------------------------------------------------------------------------
-// 4. Main Weather Fetching Function (Preserving original signature)
+// 5. Weather Fetching via Geolocation & Search Query
 // -----------------------------------------------------------------------------
+async function fetchWeatherData(query, isGeolocation = false) {
+  showLoadingState();
+  if (error) {
+    error.innerHTML = "";
+  }
+
+  try {
+    const response = await axios(
+      `https://api.weatherapi.com/v1/forecast.json?key=${apiKey}&q=${encodeURIComponent(query)}&days=2&aqi=no&alerts=no`
+    );
+
+    console.log("WeatherAPI Response:", response.data);
+
+    cachedWeatherData = response.data;
+
+    // When geolocation loads or user searches, update input bar with detected city name
+    if (isGeolocation && cachedWeatherData.location?.name) {
+      const cityInput = document.querySelector("#city-input");
+      if (cityInput) {
+        cityInput.value = cachedWeatherData.location.name;
+      }
+    }
+
+    renderWeatherData(cachedWeatherData);
+  } catch (err) {
+    console.error("Error fetching weather data:", err);
+    if (error) {
+      error.innerHTML = "City not found. Please check spelling and try again.";
+    }
+  } finally {
+    hideLoadingState();
+  }
+}
+
+// Form submit handler for manual search
 async function getWeather(event) {
   if (event) {
     event.preventDefault();
   }
 
   const cityInput = document.querySelector("#city-input");
-  const city = cityInput.value.trim();
+  const city = cityInput ? cityInput.value.trim() : "";
 
   if (!city) {
     return;
   }
 
-  error.innerHTML = "";
-
-  try {
-    // Upgraded endpoint to forecast.json (2 days) for upcoming hours and astronomy data
-    const response = await axios(
-      `https://api.weatherapi.com/v1/forecast.json?key=${apiKey}&q=${encodeURIComponent(city)}&days=2&aqi=no&alerts=no`
-    );
-
-    console.log("WeatherAPI Response:", response.data);
-
-    // Cache the data for instantaneous Celsius/Fahrenheit switches
-    cachedWeatherData = response.data;
-
-    // Render the entire interface
-    renderWeatherData(cachedWeatherData);
-
-  } catch (err) {
-    console.error("Error fetching weather data:", err);
-
-    error.innerHTML = "City not found. Please check spelling and try again.";
-
-    cityName.innerHTML = "Search for a city";
-    para.innerHTML = "--";
-    condition.innerHTML = "Weather condition";
-    humidity.innerHTML = "--";
-    feelsLike.innerHTML = "--";
-    wind.innerHTML = "--";
-  }
+  await fetchWeatherData(city, false);
 }
 
 // -----------------------------------------------------------------------------
-// 5. Render All Weather Data to the DOM
+// 6. Render All Weather Data to the DOM
 // -----------------------------------------------------------------------------
 function renderWeatherData(weather) {
   if (!weather || !weather.current || !weather.location) return;
@@ -236,7 +284,6 @@ function renderWeatherData(weather) {
   cityName.innerHTML = `${location.name}, ${location.country}`;
 
   if (location.localtime) {
-    // "2026-09-19 22:00"
     const dateObj = new Date(location.localtime.replace(" ", "T"));
     const dateOptions = { weekday: "long", month: "short", day: "numeric" };
     const timeOptions = { hour: "numeric", minute: "2-digit" };
@@ -248,15 +295,22 @@ function renderWeatherData(weather) {
   condition.innerHTML = current.condition.text;
   heroIconEl.innerHTML = getWeatherSvg(current.condition.text, current.is_day);
 
-  // 3. Dynamic Atmospheric Background & Editorial Subtitle
+  // 3. Dynamic Atmospheric Background & Auto Dark Mode
   const themeData = determineAtmosphericTheme(weather);
-  appContainer.className = `weather-app-container ${themeData.themeClass}`;
+  const darkClass = themeData.isDark ? " dark-mode" : "";
+  appContainer.className = `weather-app-container ${themeData.themeClass}${darkClass}`;
+
+  if (themeData.isDark) {
+    document.body.classList.add("dark-mode");
+  } else {
+    document.body.classList.remove("dark-mode");
+  }
+
   astroPrimaryTag.innerHTML = themeData.tag;
   astroPaletteDesc.innerHTML = themeData.paletteDesc;
 
-  // 4. Astronomical Sunset Header (Direct reference match)
+  // 4. Astronomical Sunset / Sunrise Header
   if (astro && astro.sunset) {
-    // e.g. "06:31 PM" -> "6:31" and "pm"
     const sunsetParts = astro.sunset.split(" ");
     let timeStr = sunsetParts[0];
     if (timeStr.startsWith("0")) timeStr = timeStr.substring(1);
@@ -318,7 +372,7 @@ function renderWeatherData(weather) {
 }
 
 // -----------------------------------------------------------------------------
-// 6. Temperature Unit Management (°C / °F)
+// 7. Temperature Unit Management (°C / °F)
 // -----------------------------------------------------------------------------
 function setTemperatureUnit(unit) {
   if (currentUnit === unit) return;
@@ -365,7 +419,7 @@ function updateTemperatureDisplays() {
 }
 
 // -----------------------------------------------------------------------------
-// 7. Hourly Forecast Rendering (Upcoming 7 hours seamlessly spanning midnight)
+// 8. Hourly Forecast Rendering (Upcoming 7 hours seamlessly spanning midnight)
 // -----------------------------------------------------------------------------
 function renderHourlyForecast(weather) {
   if (!hourlyContainer || !weather.forecast?.forecastday) return;
@@ -383,7 +437,6 @@ function renderHourlyForecast(weather) {
 
   let html = "";
   upcomingHours.forEach((hr) => {
-    // Format hour string (e.g. "2026-09-19 23:00" -> "11 PM")
     const timeOnly = hr.time.split(" ")[1];
     const hourNum = parseInt(timeOnly.split(":")[0], 10);
     const ampm = hourNum >= 12 ? "PM" : "AM";
@@ -409,14 +462,42 @@ function renderHourlyForecast(weather) {
 }
 
 // -----------------------------------------------------------------------------
-// 8. Initial Page Load
-// Automatically fetches initial weather for Karachi so the app is immediately alive
+// 9. Initial Geolocation & Default Fallback (Karachi)
+// Triggers native browser geolocation on page load; falls back to Karachi on denial/error
 // -----------------------------------------------------------------------------
-document.addEventListener("DOMContentLoaded", () => {
+function initGeolocationWeather() {
   const cityInput = document.querySelector("#city-input");
-  if (cityInput) {
-    cityInput.value = "Karachi";
+
+  if ("geolocation" in navigator) {
+    showLoadingState();
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const { latitude, longitude } = position.coords;
+        fetchWeatherData(`${latitude.toFixed(4)},${longitude.toFixed(4)}`, true);
+      },
+      (geoError) => {
+        console.warn("Geolocation denied, timed out, or unavailable:", geoError.message);
+        if (cityInput) {
+          cityInput.value = "Karachi";
+        }
+        fetchWeatherData("Karachi", false);
+      },
+      {
+        timeout: 8000,
+        maximumAge: 60000,
+        enableHighAccuracy: true
+      }
+    );
+  } else {
+    // Browser does not support geolocation
+    if (cityInput) {
+      cityInput.value = "Karachi";
+    }
+    fetchWeatherData("Karachi", false);
   }
-  // Fetch default city
-  getWeather();
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  initGeolocationWeather();
 });
